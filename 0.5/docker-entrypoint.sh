@@ -32,10 +32,11 @@ fi
 
 # running as non root user
 if [ "$1" == 'janusgraph' ]; then
+  echo "I am janusgraph"
   # setup config directory
   mkdir -p ${JANUS_DATA_DIR} ${JANUS_CONFIG_DIR}
   cp conf/gremlin-server/janusgraph-${JANUS_PROPS_TEMPLATE}-server.properties ${JANUS_CONFIG_DIR}/janusgraph.properties
-  cp conf/gremlin-server/gremlin-server.yaml ${JANUS_CONFIG_DIR}
+  cp conf/gremlin-server/gremlin-server.yaml ${JANUS_CONFIG_DIR}  
   chown -R "$(id -u):$(id -g)" ${JANUS_DATA_DIR} ${JANUS_CONFIG_DIR}
   chmod 700 ${JANUS_DATA_DIR} ${JANUS_CONFIG_DIR}
   chmod -R 600 ${JANUS_CONFIG_DIR}/*

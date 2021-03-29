@@ -41,9 +41,13 @@ RUN apt update -y && apt install -y gpg unzip curl && \
     rm -rf ${JANUS_HOME}/examples
 
 COPY conf/janusgraph-berkeleyje-lucene-server.properties conf/log4j-server.properties ${JANUS_HOME}/conf/gremlin-server/
+COPY conf/janusgraph-cql-server.properties conf/log4j-server.properties ${JANUS_HOME}/conf/gremlin-server/
 COPY scripts/remote-connect.groovy ${JANUS_HOME}/scripts/
+# COPY conf/gremlin-server.yaml ${JANUS_HOME}/conf/gremlin-server/
 
 FROM openjdk:8-jre-slim-buster
+
+RUN apt update -y && apt install -y gpg unzip curl nano
 
 ARG CREATED=test
 ARG REVISION=test
@@ -55,13 +59,16 @@ ENV JANUS_VERSION=${JANUS_VERSION} \
     JANUS_DATA_DIR=/var/lib/janusgraph \
     JANUS_SERVER_TIMEOUT=30 \
     JANUS_STORAGE_TIMEOUT=60 \
-    JANUS_PROPS_TEMPLATE=berkeleyje-lucene \
+    # JANUS_PROPS_TEMPLATE=berkeleyje-lucene \
+    JANUS_PROPS_TEMPLATE=cql \
     JANUS_INITDB_DIR=/docker-entrypoint-initdb.d \
     janusgraph.index.search.directory=/var/lib/janusgraph/index \
     janusgraph.storage.directory=/var/lib/janusgraph/data \
     gremlinserver.graphs.graph=/etc/opt/janusgraph/janusgraph.properties \
     gremlinserver.threadPoolWorker=1 \
-    gremlinserver.gremlinPool=8
+    gremlinserver.gremlinPool=8 \
+    gremlinserver.host=0 \
+    gremlinserver.channelizer=org.apache.tinkerpop.gremlin.server.channel.WsAndHttpChannelizer
 
 RUN groupadd -r janusgraph --gid=999 && \
     useradd -r -g janusgraph --uid=999 -d ${JANUS_DATA_DIR} janusgraph && \
@@ -78,7 +85,12 @@ RUN chmod 755 /usr/local/bin/docker-entrypoint.sh && \
     chmod 755 /usr/local/bin/load-initdb.sh && \
     chmod 755 /usr/bin/yq && \
     mkdir -p ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR} && \
-    chown -R janusgraph:janusgraph ${JANUS_HOME} ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR}
+    # chown -R janusgraph:0 ${JANUS_HOME} ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR}
+    chgrp -R 0 ${JANUS_HOME} ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR} && \
+    chmod -R g=u ${JANUS_HOME} ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR}
+
+RUN chmod u+x /opt/janusgraph/bin/gremlin.sh
+RUN chmod u+x /opt/janusgraph/conf/remote.yaml
 
 EXPOSE 8182
 
