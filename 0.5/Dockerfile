@@ -67,7 +67,7 @@ ENV JANUS_VERSION=${JANUS_VERSION} \
     gremlinserver.graphs.graph=/etc/opt/janusgraph/janusgraph.properties \
     gremlinserver.threadPoolWorker=1 \
     gremlinserver.gremlinPool=8 \
-    gremlinserver.host=0 \
+    gremlinserver.host=0.0.0.0 \
     gremlinserver.channelizer=org.apache.tinkerpop.gremlin.server.channel.WsAndHttpChannelizer
 
 RUN groupadd -r janusgraph --gid=999 && \
@@ -85,9 +85,9 @@ RUN chmod 755 /usr/local/bin/docker-entrypoint.sh && \
     chmod 755 /usr/local/bin/load-initdb.sh && \
     chmod 755 /usr/bin/yq && \
     mkdir -p ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR} && \
-    # chown -R janusgraph:0 ${JANUS_HOME} ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR}
+    chown -R janusgraph:janusgraph ${JANUS_HOME} ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR} && \
     chgrp -R 0 ${JANUS_HOME} ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR} && \
-    chmod -R g=u ${JANUS_HOME} ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR}
+    chmod -R g+w ${JANUS_HOME} ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR}
 
 RUN chmod u+x /opt/janusgraph/bin/gremlin.sh
 RUN chmod u+x /opt/janusgraph/conf/remote.yaml
