@@ -45,13 +45,20 @@ COPY conf/janusgraph-cql-server.properties conf/log4j-server.properties ${JANUS_
 COPY scripts/remote-connect.groovy ${JANUS_HOME}/scripts/
 # COPY conf/gremlin-server.yaml ${JANUS_HOME}/conf/gremlin-server/
 
-FROM openjdk:8-jre-slim-buster
-
-RUN apt update -y && apt install -y gpg unzip curl nano
+# FROM openjdk:8-jre-slim-buster
+FROM registry.access.redhat.com/ubi8/openjdk-8:1.3-12
 
 ARG CREATED=test
 ARG REVISION=test
 ARG JANUS_VERSION=0.5.3
+
+LABEL name="JanusGraph" \
+      maintainer="sanjeev.ghimire@ibm.com" \
+      vendor="JanusGraph" \
+      version=${JANUS_VERSION} \
+      release="1" \
+      summary="A distributed graph database" \
+      description="A distributred graph database"
 
 ENV JANUS_VERSION=${JANUS_VERSION} \
     JANUS_HOME=/opt/janusgraph \
@@ -70,22 +77,30 @@ ENV JANUS_VERSION=${JANUS_VERSION} \
     gremlinserver.host=0.0.0.0 \
     gremlinserver.channelizer=org.apache.tinkerpop.gremlin.server.channel.WsAndHttpChannelizer
 
-RUN groupadd -r janusgraph --gid=999 && \
-    useradd -r -g janusgraph --uid=999 -d ${JANUS_DATA_DIR} janusgraph && \
-    apt-get update -y && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends krb5-user && \
+USER root
+
+RUN groupadd -r janusgraph --gid=9999 && \
+    useradd -r -g janusgraph --uid=9999 -d ${JANUS_DATA_DIR} janusgraph && \
+    # apt-get update -y && \
+    # DEBIAN_FRONTEND=noninteractive dnf install -y --no-install-recommends krb5-user && \
+    # dnf -y upgrade && \
+    dnf -y upgrade-minimal --security --sec-severity=Important --sec-severity=Critical && \
     rm -rf /var/lib/apt/lists/*
+
 
 COPY --from=builder /opt/janusgraph/ /opt/janusgraph/
 COPY --from=builder /opt/yq /usr/bin/yq
 COPY docker-entrypoint.sh /usr/local/bin/
 COPY load-initdb.sh /usr/local/bin/
 
+# copy license
+COPY licenses /licenses
+
 RUN chmod 755 /usr/local/bin/docker-entrypoint.sh && \
     chmod 755 /usr/local/bin/load-initdb.sh && \
     chmod 755 /usr/bin/yq && \
     mkdir -p ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR} && \
-    chown -R janusgraph:janusgraph ${JANUS_HOME} ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR} && \
+    chown -R 9999:9999 ${JANUS_HOME} ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR} && \
     chgrp -R 0 ${JANUS_HOME} ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR} && \
     chmod -R g+w ${JANUS_HOME} ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR}
 

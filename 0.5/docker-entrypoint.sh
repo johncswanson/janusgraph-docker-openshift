@@ -31,8 +31,7 @@ if [ "$1" == 'janusgraph' ] && [ "$(id -u)" == "0" ]; then
 fi
 
 # running as non root user
-if [ "$1" == 'janusgraph' ]; then
-  echo "I am janusgraph"
+if [ "$1" == 'janusgraph' ]; then  
   # setup config directory
   mkdir -p ${JANUS_DATA_DIR} ${JANUS_CONFIG_DIR}
   cp conf/gremlin-server/janusgraph-${JANUS_PROPS_TEMPLATE}-server.properties ${JANUS_CONFIG_DIR}/janusgraph.properties

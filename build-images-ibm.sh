@@ -26,6 +26,7 @@ version="${1:-}"
 # override to run the latest version only:
 versions="0.5"
 latest_version="0.5"
+tag="1.0.0"
 
 REVISION="$(git rev-parse --short HEAD)"
 CREATED="$(date -u +”%Y-%m-%dT%H:%M:%SZ”)"
@@ -51,9 +52,9 @@ for v in "${versions[@]}"; do
     docker tag "${IMAGE_NAME}:${full_version}" "${IMAGE_NAME}:${full_version_with_revision}"
     echo "Successfully tagged ${IMAGE_NAME}:${full_version_with_revision}"
     if [ "${v}" == "${latest_version}" ]; then
-      docker tag "${IMAGE_NAME}:${v}" "${IMAGE_NAME}:latest"
-      echo "Successfully tagged ${IMAGE_NAME}:latest"
+      docker tag "${IMAGE_NAME}:${v}" "${IMAGE_NAME}:${tag}"
+      echo "Successfully tagged ${IMAGE_NAME}:${tag}"
     fi
-    docker push "${IMAGE_NAME}:latest"
+    docker push "${IMAGE_NAME}:${tag}"
   fi
 done
