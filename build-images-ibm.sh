@@ -26,7 +26,7 @@ version="${1:-}"
 # override to run the latest version only:
 versions="0.5"
 latest_version="0.5"
-tag="1.0.0"
+tag="1.0.1"
 
 REVISION="$(git rev-parse --short HEAD)"
 CREATED="$(date -u +”%Y-%m-%dT%H:%M:%SZ”)"
@@ -35,6 +35,7 @@ IMAGE_NAME="docker.io/sanjeevghimire/janusgraph"
 echo "REVISION: ${REVISION}"
 echo "CREATED: ${CREATED}"
 echo "IMAGE_NAME: ${IMAGE_NAME}"
+echo "tag: ${tag}" 
 
 for v in "${versions[@]}"; do
   if [ -z "${version}" ] || [ "${version}" == "${v}" ]; then

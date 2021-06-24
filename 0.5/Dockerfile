@@ -79,12 +79,14 @@ ENV JANUS_VERSION=${JANUS_VERSION} \
 
 USER root
 
-RUN groupadd -r janusgraph --gid=9999 && \
-    useradd -r -g janusgraph --uid=9999 -d ${JANUS_DATA_DIR} janusgraph && \
-    # apt-get update -y && \
-    # DEBIAN_FRONTEND=noninteractive dnf install -y --no-install-recommends krb5-user && \
-    # dnf -y upgrade && \
-    dnf -y upgrade-minimal --security --sec-severity=Important --sec-severity=Critical && \
+# RUN groupadd -r janusgraph --gid=999 && \
+#     useradd -r -g janusgraph --uid=999 -d ${JANUS_DATA_DIR} janusgraph && \
+#     apt-get update -y && \
+#     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends krb5-user && \
+#     rm -rf /var/lib/apt/lists/*
+
+
+RUN dnf -y upgrade-minimal --security --sec-severity=Important --sec-severity=Critical && \
     rm -rf /var/lib/apt/lists/*
 
 
@@ -100,12 +102,10 @@ RUN chmod 755 /usr/local/bin/docker-entrypoint.sh && \
     chmod 755 /usr/local/bin/load-initdb.sh && \
     chmod 755 /usr/bin/yq && \
     mkdir -p ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR} && \
-    chown -R 9999:9999 ${JANUS_HOME} ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR} && \
-    chgrp -R 0 ${JANUS_HOME} ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR} && \
-    chmod -R g+w ${JANUS_HOME} ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR}
-
-RUN chmod u+x /opt/janusgraph/bin/gremlin.sh
-RUN chmod u+x /opt/janusgraph/conf/remote.yaml
+    chown -R 999:0 ${JANUS_HOME} ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR} && \    
+    chmod -R g+w ${JANUS_HOME} ${JANUS_INITDB_DIR} ${JANUS_CONFIG_DIR} ${JANUS_DATA_DIR} && \
+    chmod u+x /opt/janusgraph/bin/gremlin.sh && \
+    chmod u+x /opt/janusgraph/conf/remote.yaml && \
 
 EXPOSE 8182
 
