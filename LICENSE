@@ -218,6 +218,7 @@ For convenience, copies of APACHE-2.0 and CC-BY-4.0 are included verbatim below.
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+<<<<<<< HEAD
 
 /==============================================================================\
 |                                  CC-BY-4.0                                   |
@@ -618,3 +619,5 @@ the avoidance of doubt, this paragraph does not form part of the
 public licenses.
 
 Creative Commons may be contacted at creativecommons.org.
+=======
+>>>>>>> 11f55463be31e7a8677928e93b33f18cbd9e1910
