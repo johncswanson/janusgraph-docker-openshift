@@ -50,7 +50,7 @@ These are properties that allows JanusGraph to talk to Cassandra as Cassandra wi
 
 After these changes, make sure to update `janusgraph-cql-server.properties` with the `cluster-ip` of the Cassandra service. Update `storage.hostname` with the `Cluster-IP`.
 
-![Cluster IP](../images/cluster-ip.png)
+![Cluster IP](cluster-ip.png)
 
 Now you can build and deploy the JanusGraph Docker image to OpenShift by running the following command.
 > NOTE: modify the docker image name in the script: `IMAGE_NAME="<your docker image repository>"`
