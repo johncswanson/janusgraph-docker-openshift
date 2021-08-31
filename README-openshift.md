@@ -5,7 +5,7 @@ The JanusGraph Docker image from the official repo deploys fine into Kubernetes 
 ## Fork the repo
 Fork the repo `https://github.com/JanusGraph/janusgraph-docker`
 
-## Change the file and group ownershipe
+## Change the file and group ownership
 
 [Change the file and group ownership](https://developer.ibm.com/learningpaths/universal-application-image/design-universal-image/#6-set-group-ownership-and-file-permission) to root (0) for related folders. The following modifications apply to the `Dockerfile`:
 ```bash
