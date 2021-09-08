@@ -1,4 +1,4 @@
-# Modfify Existing JansuGraph Docker to work with OpenShift
+# Modify Existing JanusGraph Docker to work with OpenShift
 
 The JanusGraph Docker image from the official repo deploys fine into Kubernetes but runs into errors when deployed into OpenShift. There are few things that need to be modified before you can deploy:
 
