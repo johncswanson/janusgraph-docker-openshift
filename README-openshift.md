@@ -1,4 +1,4 @@
-# Modfify Existing JansuGraph Docker to work with OpenShift
+# Modify existing JanusGraph Docker to work with OpenShift
 
 The JanusGraph Docker image from the official repo deploys fine into Kubernetes but runs into errors when deployed into OpenShift. There are few things that need to be modified before you can deploy:
 
@@ -17,7 +17,7 @@ RUN chmod u+x /opt/janusgraph/conf/remote.yaml
 ```
 
 
-## Configure Janusgraph to use with Cassandra ONLY!
+## Configure JanusGraph to use with Cassandra ONLY!
 
 > NOTE: For BerkeleyDB storage you don't need to change the `JANUS_PROPS_TEMPLATE` and create a `janusgraph-cql-server.properties`. The below instruction is only for use with `Cassandra`
 
@@ -42,13 +42,13 @@ index.search.backend=lucene
 index.search.directory=/var/lib/janusgraph/index
 ```
 
-These are properties that allows JanusGraph to talk to Cassandra as Cassandra will be storing the data in a distributed fashion.
+These are properties that allows JanusGraph to talk to Cassandra, as Cassandra will be storing the data in a distributed fashion.
 
 After these changes, make sure to update `janusgraph-cql-server.properties` with the `cluster-ip` of the Cassandra service. Update `storage.hostname` with the `Cluster-IP`.
 
 ![Cluster IP](cluster-ip.png)
 
-## Build and push JanusGraph docker image
+## Build and push JanusGraph Docker image
 
 * Since you will only be using the latest version, change the version to the latest in `build-images.sh`. You will create a copy of that file to `build-images-ibm.sh` and modify it there. These modifications include commenting out a few lines. The following modifications are applied to the build script:
 
@@ -66,7 +66,7 @@ latest_version="0.5"
 ```
 
 Now you can build and deploy the JanusGraph Docker image to OpenShift by running the following command.
-> NOTE: modify the docker image name in the script: `IMAGE_NAME="<your docker image repository>"`
+> NOTE: modify the Docker image name in the script: `IMAGE_NAME="<your docker image repository>"`
 
 ```bash
 $ ./build-images-ibm.sh -- if you have created a new file
